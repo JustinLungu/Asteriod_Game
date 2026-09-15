@@ -22,6 +22,9 @@ class Score(pygame.sprite.Sprite):
             self.timer -= 1.0
             self.points += SCORE_PER_SECOND
 
+    def add_points(self, points):
+        self.points += points
+
     def draw(self, screen):
         text = self.font.render(f"Score: {self.points}", True, "white")
         screen.blit(text, (SCORE_MARGIN, SCORE_MARGIN))

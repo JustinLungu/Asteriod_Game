@@ -63,6 +63,7 @@ def main():
                     log_event("asteroid_shot")
                     asteroid.split()
                     shot.kill()
+                    score.add_points(SCORE_PER_ASTEROID_HIT)
         
         screen.fill("black")
         for drawing in drawable:
