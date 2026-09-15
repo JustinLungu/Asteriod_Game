@@ -6,6 +6,7 @@ from asteroidfield import AsteroidField
 from shot import Shot
 from score import Score
 from leaderboard import Leaderboard
+from menu import Menu
 import pygame
 import sys
 
@@ -17,10 +18,13 @@ def main():
 
     pygame.init()
     clock = pygame.time.Clock()
-    dt = 0
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-    
+    menu = Menu(screen)
+    if not menu.run(clock):
+        return
+
+    dt = 0
 
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
