@@ -21,7 +21,8 @@ def main():
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-    menu = Menu(screen)
+    leaderboard = Leaderboard()
+    menu = Menu(screen, leaderboard)
     controls_screen = ControlsScreen(screen)
 
     while True:
@@ -54,8 +55,6 @@ def main():
 
     Score.containers = (updatable, drawable)
     score = Score()
-
-    leaderboard = Leaderboard()
 
 
     while True:

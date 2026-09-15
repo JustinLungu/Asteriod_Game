@@ -4,6 +4,10 @@ from constants import (
     MENU_TITLE_FONT_SIZE,
     MENU_OPTION_FONT_SIZE,
     MENU_OPTION_SPACING,
+    LEADERBOARD_PANEL_MARGIN,
+    LEADERBOARD_HEADER_FONT_SIZE,
+    LEADERBOARD_ENTRY_FONT_SIZE,
+    LEADERBOARD_ENTRY_SPACING,
 )
 import pygame
 
@@ -14,11 +18,14 @@ class Menu:
         ("Quit", "quit"),
     ]
 
-    def __init__(self, screen):
+    def __init__(self, screen, leaderboard):
         self.screen = screen
+        self.leaderboard = leaderboard
         self.selected_index = 0
         self.title_font = pygame.font.Font(None, MENU_TITLE_FONT_SIZE)
         self.option_font = pygame.font.Font(None, MENU_OPTION_FONT_SIZE)
+        self.leaderboard_header_font = pygame.font.Font(None, LEADERBOARD_HEADER_FONT_SIZE)
+        self.leaderboard_entry_font = pygame.font.Font(None, LEADERBOARD_ENTRY_FONT_SIZE)
 
     def run(self, clock):
         while True:
@@ -51,3 +58,26 @@ class Menu:
                 center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + i * MENU_OPTION_SPACING)
             )
             self.screen.blit(option_surface, option_rect)
+
+        self.draw_leaderboard()
+
+    def draw_leaderboard(self):
+        x = SCREEN_WIDTH - LEADERBOARD_PANEL_MARGIN
+        y = LEADERBOARD_PANEL_MARGIN
+
+        header_surface = self.leaderboard_header_font.render("Leaderboard", True, "white")
+        header_rect = header_surface.get_rect(topright=(x, y))
+        self.screen.blit(header_surface, header_rect)
+
+        y += header_rect.height + LEADERBOARD_ENTRY_SPACING / 2
+
+        if not self.leaderboard.scores:
+            empty_surface = self.leaderboard_entry_font.render("No scores yet", True, "white")
+            empty_rect = empty_surface.get_rect(topright=(x, y))
+            self.screen.blit(empty_surface, empty_rect)
+            return
+
+        for i, score in enumerate(self.leaderboard.scores):
+            entry_surface = self.leaderboard_entry_font.render(f"{i + 1}. {score}", True, "white")
+            entry_rect = entry_surface.get_rect(topright=(x, y + i * LEADERBOARD_ENTRY_SPACING))
+            self.screen.blit(entry_surface, entry_rect)
