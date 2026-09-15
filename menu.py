@@ -8,7 +8,11 @@ from constants import (
 import pygame
 
 class Menu:
-    OPTIONS = ["Start Game", "Quit"]
+    OPTIONS = [
+        ("Start Game", "start"),
+        ("Controls", "controls"),
+        ("Quit", "quit"),
+    ]
 
     def __init__(self, screen):
         self.screen = screen
@@ -20,14 +24,14 @@ class Menu:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return False
+                    return "quit"
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
                         self.selected_index = (self.selected_index - 1) % len(self.OPTIONS)
                     if event.key == pygame.K_DOWN:
                         self.selected_index = (self.selected_index + 1) % len(self.OPTIONS)
                     if event.key == pygame.K_RETURN:
-                        return self.OPTIONS[self.selected_index] == "Start Game"
+                        return self.OPTIONS[self.selected_index][1]
 
             self.draw()
             pygame.display.flip()
@@ -40,9 +44,9 @@ class Menu:
         title_rect = title_surface.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3))
         self.screen.blit(title_surface, title_rect)
 
-        for i, option in enumerate(self.OPTIONS):
+        for i, (label, _action) in enumerate(self.OPTIONS):
             color = "yellow" if i == self.selected_index else "white"
-            option_surface = self.option_font.render(option, True, color)
+            option_surface = self.option_font.render(label, True, color)
             option_rect = option_surface.get_rect(
                 center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + i * MENU_OPTION_SPACING)
             )

@@ -7,6 +7,7 @@ from shot import Shot
 from score import Score
 from leaderboard import Leaderboard
 from menu import Menu
+from controls_screen import ControlsScreen
 import pygame
 import sys
 
@@ -21,8 +22,18 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
     menu = Menu(screen)
-    if not menu.run(clock):
-        return
+    controls_screen = ControlsScreen(screen)
+
+    while True:
+        action = menu.run(clock)
+        if action == "quit":
+            return
+        if action == "controls":
+            if controls_screen.run(clock) == "quit":
+                return
+            continue
+        if action == "start":
+            break
 
     dt = 0
 
