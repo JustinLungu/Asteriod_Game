@@ -4,6 +4,8 @@ from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
+from score import Score
+from leaderboard import Leaderboard
 import pygame
 import sys
 
@@ -33,7 +35,12 @@ def main():
     AsteroidField.containers = (updatable)
     asteroid_field = AsteroidField()
 
-    Shot.containers = (shots, updatable, drawable) 
+    Shot.containers = (shots, updatable, drawable)
+
+    Score.containers = (updatable, drawable)
+    score = Score()
+
+    leaderboard = Leaderboard()
 
 
     while True:
@@ -49,8 +56,15 @@ def main():
 
         for asteroid in asteroids:
             if asteroid.collides_with(player):
-                log_event("player_hit")
+                log_event("player_hit", score=score.points)
                 print("Game over!")
+                print("Final score: " + str(score.points))
+
+                if leaderboard.is_high_score(score.points):
+                    print("New high score!")
+                leaderboard.submit(score.points)
+                print("Leaderboard: " + str(leaderboard.scores))
+
                 sys.exit()
             
             for shot in shots:
@@ -58,6 +72,7 @@ def main():
                     log_event("asteroid_shot")
                     asteroid.split()
                     shot.kill()
+                    score.add_points(SCORE_PER_ASTEROID_HIT)
         
         screen.fill("black")
         for drawing in drawable:
