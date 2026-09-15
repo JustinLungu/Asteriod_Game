@@ -1,11 +1,14 @@
-from constants import *
-from logger import log_state, log_event
-from player import Player
-from asteroid import Asteroid
-from asteroidfield import AsteroidField
-from shot import Shot
-from score import Score
-from leaderboard import Leaderboard
+from asteriod_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from asteriod_game.game.constants import SCORE_PER_ASTEROID_HIT
+from asteriod_game.logger import log_state, log_event
+from asteriod_game.game.player import Player
+from asteriod_game.game.asteroid import Asteroid
+from asteriod_game.game.asteroidfield import AsteroidField
+from asteriod_game.game.shot import Shot
+from asteriod_game.game.score import Score
+from asteriod_game.leaderboard import Leaderboard
+from asteriod_game.ui.menu import Menu
+from asteriod_game.ui.controls_screen import ControlsScreen
 import pygame
 import sys
 
@@ -17,10 +20,24 @@ def main():
 
     pygame.init()
     clock = pygame.time.Clock()
-    dt = 0
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-    
+    leaderboard = Leaderboard()
+    menu = Menu(screen, leaderboard)
+    controls_screen = ControlsScreen(screen)
+
+    while True:
+        action = menu.run(clock)
+        if action == "quit":
+            return
+        if action == "controls":
+            if controls_screen.run(clock) == "quit":
+                return
+            continue
+        if action == "start":
+            break
+
+    dt = 0
 
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
@@ -39,8 +56,6 @@ def main():
 
     Score.containers = (updatable, drawable)
     score = Score()
-
-    leaderboard = Leaderboard()
 
 
     while True:

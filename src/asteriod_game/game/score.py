@@ -1,4 +1,4 @@
-from constants import (
+from asteriod_game.game.constants import (
     SCORE_PER_SECOND,
     SCORE_FONT_SIZE,
     SCORE_MARGIN,

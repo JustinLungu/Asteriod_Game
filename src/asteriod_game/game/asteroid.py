@@ -1,10 +1,10 @@
-from circleshape import CircleShape
-from constants import (
-    LINE_WIDTH, 
-    ASTEROID_MIN_RADIUS, 
+from asteriod_game.game.circleshape import CircleShape
+from asteriod_game.game.constants import (
+    LINE_WIDTH,
+    ASTEROID_MIN_RADIUS,
     SPLIT_SPEED_INCREASE
 )
-from logger import log_event
+from asteriod_game.logger import log_event
 import pygame, random
 
 class Asteroid(CircleShape):

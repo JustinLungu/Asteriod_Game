@@ -1,15 +1,17 @@
-# global constants
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+# gameplay constants, local to the game/ package
+
+# shared rendering
+LINE_WIDTH = 2
 
 # player constants
 PLAYER_RADIUS = 20
-LINE_WIDTH = 2
 PLAYER_TURN_SPEED = 300
 PLAYER_SPEED = 200
-SHOT_RADIUS = 5
 PLAYER_SHOOT_SPEED = 500
 PLAYER_SHOOT_COOLDOWN_SECONDS = 0.3
+
+# shot constants
+SHOT_RADIUS = 5
 
 # asteroid constants
 ASTEROID_MIN_RADIUS = 20
@@ -23,8 +25,3 @@ SCORE_PER_SECOND = 10
 SCORE_PER_ASTEROID_HIT = 10
 SCORE_FONT_SIZE = 36
 SCORE_MARGIN = 10
-
-# leaderboard constants
-LEADERBOARD_FILE = "leaderboard.json"
-LEADERBOARD_SIZE = 5
-

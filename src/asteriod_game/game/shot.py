@@ -1,8 +1,8 @@
-from constants import (
-    SHOT_RADIUS, 
+from asteriod_game.game.constants import (
+    SHOT_RADIUS,
     LINE_WIDTH
 )
-from circleshape import CircleShape
+from asteriod_game.game.circleshape import CircleShape
 import pygame
 
 class Shot(CircleShape):
