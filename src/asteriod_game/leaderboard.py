@@ -1,4 +1,4 @@
-from constants import (
+from asteriod_game.constants import (
     LEADERBOARD_FILE,
     LEADERBOARD_SIZE,
 )

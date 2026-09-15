@@ -1,13 +1,14 @@
-from constants import *
-from logger import log_state, log_event
-from player import Player
-from asteroid import Asteroid
-from asteroidfield import AsteroidField
-from shot import Shot
-from score import Score
-from leaderboard import Leaderboard
-from menu import Menu
-from controls_screen import ControlsScreen
+from asteriod_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from asteriod_game.game.constants import SCORE_PER_ASTEROID_HIT
+from asteriod_game.logger import log_state, log_event
+from asteriod_game.game.player import Player
+from asteriod_game.game.asteroid import Asteroid
+from asteriod_game.game.asteroidfield import AsteroidField
+from asteriod_game.game.shot import Shot
+from asteriod_game.game.score import Score
+from asteriod_game.leaderboard import Leaderboard
+from asteriod_game.ui.menu import Menu
+from asteriod_game.ui.controls_screen import ControlsScreen
 import pygame
 import sys
 

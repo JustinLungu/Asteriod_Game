@@ -1,45 +1,7 @@
-# global constants
+# global constants, shared across the top-level package, game/, and ui/
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
-# player constants
-PLAYER_RADIUS = 20
-LINE_WIDTH = 2
-PLAYER_TURN_SPEED = 300
-PLAYER_SPEED = 200
-SHOT_RADIUS = 5
-PLAYER_SHOOT_SPEED = 500
-PLAYER_SHOOT_COOLDOWN_SECONDS = 0.3
-
-# asteroid constants
-ASTEROID_MIN_RADIUS = 20
-ASTEROID_KINDS = 3
-ASTEROID_SPAWN_RATE_SECONDS = 0.8
-ASTEROID_MAX_RADIUS = ASTEROID_MIN_RADIUS * ASTEROID_KINDS
-SPLIT_SPEED_INCREASE = 1.2
-
-# score constants
-SCORE_PER_SECOND = 10
-SCORE_PER_ASTEROID_HIT = 10
-SCORE_FONT_SIZE = 36
-SCORE_MARGIN = 10
-
-# leaderboard constants
+# leaderboard constants (used only by leaderboard.py, in this same directory)
 LEADERBOARD_FILE = "leaderboard.json"
 LEADERBOARD_SIZE = 5
-
-# menu constants
-MENU_TITLE_FONT_SIZE = 64
-MENU_OPTION_FONT_SIZE = 40
-MENU_OPTION_SPACING = 60
-
-# controls screen constants
-CONTROLS_TEXT_FONT_SIZE = 32
-CONTROLS_LINE_SPACING = 44
-
-# menu leaderboard panel constants
-LEADERBOARD_PANEL_MARGIN = 40
-LEADERBOARD_HEADER_FONT_SIZE = 36
-LEADERBOARD_ENTRY_FONT_SIZE = 28
-LEADERBOARD_ENTRY_SPACING = 32
-

@@ -1,6 +1,5 @@
-from constants import (
-    SCREEN_WIDTH,
-    SCREEN_HEIGHT,
+from asteriod_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from asteriod_game.ui.constants import (
     MENU_TITLE_FONT_SIZE,
     MENU_OPTION_FONT_SIZE,
     CONTROLS_TEXT_FONT_SIZE,
