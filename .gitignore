@@ -12,6 +12,7 @@ __pycache__/
 # Game info
 game_state.jsonl
 game_events.jsonl
+leaderboard.json
 
 # Folders
 roadmap*

@@ -24,3 +24,7 @@ SCORE_PER_ASTEROID_HIT = 10
 SCORE_FONT_SIZE = 36
 SCORE_MARGIN = 10
 
+# leaderboard constants
+LEADERBOARD_FILE = "leaderboard.json"
+LEADERBOARD_SIZE = 5
+
