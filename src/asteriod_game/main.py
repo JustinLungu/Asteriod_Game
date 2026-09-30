@@ -13,6 +13,19 @@ import pygame
 import sys
 
 
+def end_game(reason, score, leaderboard):
+    log_event(reason, score=score.points)
+    print("Game over!")
+    print("Final score: " + str(score.points))
+
+    if leaderboard.is_high_score(score.points):
+        print("New high score!")
+    leaderboard.submit(score.points)
+    print("Leaderboard: " + str(leaderboard.scores))
+
+    sys.exit()
+
+
 def main():
     print("Starting Asteroids with pygame version: " + pygame.version.ver)
     print("Screen width: " + str(SCREEN_WIDTH))
@@ -71,16 +84,7 @@ def main():
 
         for asteroid in asteroids:
             if asteroid.collides_with(player):
-                log_event("player_hit", score=score.points)
-                print("Game over!")
-                print("Final score: " + str(score.points))
-
-                if leaderboard.is_high_score(score.points):
-                    print("New high score!")
-                leaderboard.submit(score.points)
-                print("Leaderboard: " + str(leaderboard.scores))
-
-                sys.exit()
+                end_game("player_hit", score, leaderboard)
             
             for shot in shots:
                 if asteroid.collides_with(shot):
