@@ -1,4 +1,5 @@
 from asteriod_game.game.circleshape import CircleShape
+from asteriod_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from asteriod_game.game.constants import (
     PLAYER_RADIUS,
     LINE_WIDTH,
@@ -47,12 +48,17 @@ class Player(CircleShape):
             if self.cooldown_timer <= 0:
                 self.shoot()
                 self.cooldown_timer = PLAYER_SHOOT_COOLDOWN_SECONDS
-                
+
+        self.clamp_to_screen()
 
     def move(self, dt):
         unit_vector = pygame.Vector2(0, 1).rotate(self.rotation)
         unit_vector *= PLAYER_SPEED * dt
         self.position += unit_vector
+
+    def clamp_to_screen(self):
+        self.position.x = max(self.radius, min(self.position.x, SCREEN_WIDTH - self.radius))
+        self.position.y = max(self.radius, min(self.position.y, SCREEN_HEIGHT - self.radius))
 
     def shoot(self):
         shot = Shot(self.position.x, self.position.y)
