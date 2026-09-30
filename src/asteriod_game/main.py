@@ -6,11 +6,25 @@ from asteriod_game.game.asteroid import Asteroid
 from asteriod_game.game.asteroidfield import AsteroidField
 from asteriod_game.game.shot import Shot
 from asteriod_game.game.score import Score
+from asteriod_game.game.timer import Timer
 from asteriod_game.leaderboard import Leaderboard
 from asteriod_game.ui.menu import Menu
 from asteriod_game.ui.controls_screen import ControlsScreen
 import pygame
 import sys
+
+
+def end_game(reason, score, leaderboard):
+    log_event(reason, score=score.points)
+    print("Game over!")
+    print("Final score: " + str(score.points))
+
+    if leaderboard.is_high_score(score.points):
+        print("New high score!")
+    leaderboard.submit(score.points)
+    print("Leaderboard: " + str(leaderboard.scores))
+
+    sys.exit()
 
 
 def main():
@@ -57,6 +71,9 @@ def main():
     Score.containers = (updatable, drawable)
     score = Score()
 
+    Timer.containers = (updatable, drawable)
+    timer = Timer()
+
 
     while True:
         log_state()
@@ -69,18 +86,12 @@ def main():
             
         updatable.update(dt)
 
+        if timer.is_expired():
+            end_game("time_limit_reached", score, leaderboard)
+
         for asteroid in asteroids:
             if asteroid.collides_with(player):
-                log_event("player_hit", score=score.points)
-                print("Game over!")
-                print("Final score: " + str(score.points))
-
-                if leaderboard.is_high_score(score.points):
-                    print("New high score!")
-                leaderboard.submit(score.points)
-                print("Leaderboard: " + str(leaderboard.scores))
-
-                sys.exit()
+                end_game("player_hit", score, leaderboard)
             
             for shot in shots:
                 if asteroid.collides_with(shot):
