@@ -1,4 +1,4 @@
-from asteriod_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT, EPISODE_TIME_LIMIT_SECONDS
+from asteriod_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from asteriod_game.game.constants import SCORE_PER_ASTEROID_HIT
 from asteriod_game.logger import log_state, log_event
 from asteriod_game.game.player import Player
@@ -6,6 +6,7 @@ from asteriod_game.game.asteroid import Asteroid
 from asteriod_game.game.asteroidfield import AsteroidField
 from asteriod_game.game.shot import Shot
 from asteriod_game.game.score import Score
+from asteriod_game.game.timer import Timer
 from asteriod_game.leaderboard import Leaderboard
 from asteriod_game.ui.menu import Menu
 from asteriod_game.ui.controls_screen import ControlsScreen
@@ -51,7 +52,6 @@ def main():
             break
 
     dt = 0
-    elapsed_time = 0
 
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
@@ -71,6 +71,9 @@ def main():
     Score.containers = (updatable, drawable)
     score = Score()
 
+    Timer.containers = (updatable, drawable)
+    timer = Timer()
+
 
     while True:
         log_state()
@@ -83,8 +86,7 @@ def main():
             
         updatable.update(dt)
 
-        elapsed_time += dt
-        if elapsed_time > EPISODE_TIME_LIMIT_SECONDS:
+        if timer.is_expired():
             end_game("time_limit_reached", score, leaderboard)
 
         for asteroid in asteroids:
