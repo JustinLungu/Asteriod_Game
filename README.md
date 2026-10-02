@@ -72,7 +72,7 @@ The two `.jsonl` logs are overwritten at the start of each new run.
 
 ## Project Structure
 
-This is a `src`-layout project; the installable package lives under `src/asteriod_game/`.
+The installable package lives under `asteriod_game/` at the repo root.
 
 - `main.py`: menu/controls state wiring, game loop, and sprite group wiring
 - `constants.py`: global constants shared across the package (screen size, leaderboard file)
