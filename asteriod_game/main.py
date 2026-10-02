@@ -1,16 +1,10 @@
 from asteriod_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from asteriod_game.game.constants import SCORE_PER_ASTEROID_HIT
 from asteriod_game.logger import log_state, log_event
-from asteriod_game.game.player import Player
 from asteriod_game.game.actions import Actions
-from asteriod_game.game.asteroid import Asteroid
-from asteriod_game.game.asteroidfield import AsteroidField
-from asteriod_game.game.shot import Shot
-from asteriod_game.game.score import Score
-from asteriod_game.game.timer import Timer
 from asteriod_game.leaderboard import Leaderboard
 from asteriod_game.ui.menu import Menu
 from asteriod_game.ui.controls_screen import ControlsScreen
+from asteriod_game.rl.env import GameEnv
 import pygame
 import sys
 
@@ -63,29 +57,17 @@ def main():
         if action == "start":
             break
 
-    dt = 0
+    env = GameEnv()
+    env.reset()
 
-    updatable = pygame.sprite.Group()
-    drawable = pygame.sprite.Group()
-    asteroids = pygame.sprite.Group()
-    shots = pygame.sprite.Group()
-
-
-    Player.containers = (drawable,)
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-
-    Asteroid.containers = (asteroids, updatable, drawable)
-    AsteroidField.containers = (updatable)
-    asteroid_field = AsteroidField()
-
-    Shot.containers = (shots, updatable, drawable)
-
-    Score.containers = (updatable, drawable)
-    score = Score()
-
-    Timer.containers = (updatable, drawable)
-    timer = Timer()
-
+    updatable = env.updatable
+    drawable = env.drawable
+    asteroids = env.asteroids
+    shots = env.shots
+    player = env.player
+    asteroid_field = env.asteroid_field
+    score = env.score
+    timer = env.timer
 
     while True:
         log_state()
@@ -95,34 +77,24 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     return
-            
-        updatable.update(dt)
-        player.update(dt, actions_from_keyboard())
 
-        if timer.is_expired():
-            end_game("time_limit_reached", score, leaderboard)
+        actions = actions_from_keyboard()
+        observation, reward, terminated, truncated, info = env.step(actions.to_array())
 
-        for asteroid in asteroids:
-            if asteroid.collides_with(player):
-                end_game("player_hit", score, leaderboard)
-            
-            for shot in shots:
-                if asteroid.collides_with(shot):
-                    log_event("asteroid_shot")
-                    asteroid.split()
-                    shot.kill()
-                    score.add_points(SCORE_PER_ASTEROID_HIT)
-        
+        for event_type in info["events"]:
+            log_event(event_type)
+
+        if terminated:
+            end_game("player_hit", env.score, leaderboard)
+        if truncated:
+            end_game("time_limit_reached", env.score, leaderboard)
+
         screen.fill("black")
         for drawing in drawable:
             drawing.draw(screen)
-            
-        pygame.display.flip()
-        dt = clock.tick(60) / 1000.0
 
-        
-        
-        
+        pygame.display.flip()
+        clock.tick(60)
 
 
 if __name__ == "__main__":
