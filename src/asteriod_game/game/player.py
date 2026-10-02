@@ -32,19 +32,18 @@ class Player(CircleShape):
         self.rotation += PLAYER_TURN_SPEED * dt
 
 
-    def update(self, dt):
+    def update(self, dt, actions):
         self.cooldown_timer -= dt
-        keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_a]:
+        if actions.rotate_left:
             self.rotate(dt * -1)
-        if keys[pygame.K_d]:
+        if actions.rotate_right:
             self.rotate(dt)
-        if keys[pygame.K_w]:
+        if actions.thrust_forward:
             self.move(dt)
-        if keys[pygame.K_s]:
+        if actions.thrust_backward:
             self.move(dt * -1)
-        if keys[pygame.K_SPACE]:
+        if actions.shoot:
             if self.cooldown_timer <= 0:
                 self.shoot()
                 self.cooldown_timer = PLAYER_SHOOT_COOLDOWN_SECONDS
