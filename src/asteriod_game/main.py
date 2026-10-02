@@ -2,6 +2,7 @@ from asteriod_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from asteriod_game.game.constants import SCORE_PER_ASTEROID_HIT
 from asteriod_game.logger import log_state, log_event
 from asteriod_game.game.player import Player
+from asteriod_game.game.actions import Actions
 from asteriod_game.game.asteroid import Asteroid
 from asteriod_game.game.asteroidfield import AsteroidField
 from asteriod_game.game.shot import Shot
@@ -12,6 +13,17 @@ from asteriod_game.ui.menu import Menu
 from asteriod_game.ui.controls_screen import ControlsScreen
 import pygame
 import sys
+
+
+def actions_from_keyboard():
+    keys = pygame.key.get_pressed()
+    return Actions(
+        rotate_left=keys[pygame.K_a],
+        rotate_right=keys[pygame.K_d],
+        thrust_forward=keys[pygame.K_w],
+        thrust_backward=keys[pygame.K_s],
+        shoot=keys[pygame.K_SPACE],
+    )
 
 
 def end_game(reason, score, leaderboard):
@@ -59,7 +71,7 @@ def main():
     shots = pygame.sprite.Group()
 
 
-    Player.containers = (updatable, drawable)
+    Player.containers = (drawable,)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
     Asteroid.containers = (asteroids, updatable, drawable)
@@ -85,6 +97,7 @@ def main():
                     return
             
         updatable.update(dt)
+        player.update(dt, actions_from_keyboard())
 
         if timer.is_expired():
             end_game("time_limit_reached", score, leaderboard)
