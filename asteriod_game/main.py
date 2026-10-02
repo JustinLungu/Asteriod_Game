@@ -20,16 +20,6 @@ def actions_from_keyboard():
     )
 
 
-def actions_to_array(actions):
-    return [
-        int(actions.rotate_left),
-        int(actions.rotate_right),
-        int(actions.thrust_forward),
-        int(actions.thrust_backward),
-        int(actions.shoot),
-    ]
-
-
 def end_game(reason, score, leaderboard):
     log_event(reason, score=score.points)
     print("Game over!")
@@ -89,7 +79,7 @@ def main():
                     return
 
         actions = actions_from_keyboard()
-        observation, reward, terminated, truncated, info = env.step(actions_to_array(actions))
+        observation, reward, terminated, truncated, info = env.step(actions.to_array())
 
         for event_type in info["events"]:
             log_event(event_type)

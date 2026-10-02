@@ -58,13 +58,7 @@ class GameEnv(gym.Env):
         return self._get_observation(), {}
 
     def step(self, action):
-        actions = Actions(
-            rotate_left=bool(action[0]),
-            rotate_right=bool(action[1]),
-            thrust_forward=bool(action[2]),
-            thrust_backward=bool(action[3]),
-            shoot=bool(action[4]),
-        )
+        actions = Actions.from_array(action)
 
         self.updatable.update(FIXED_DT)
         self.player.update(FIXED_DT, actions)
