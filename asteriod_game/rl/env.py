@@ -12,6 +12,7 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 import pygame
+import random
 
 class GameEnv(gym.Env):
     def __init__(self):
@@ -34,6 +35,8 @@ class GameEnv(gym.Env):
 
     def reset(self, *, seed=None, options=None):
         super().reset(seed=seed)
+        if seed is not None:
+            random.seed(seed)
 
         self.updatable = pygame.sprite.Group()
         self.drawable = pygame.sprite.Group()
