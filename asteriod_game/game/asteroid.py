@@ -6,7 +6,6 @@ from asteriod_game.game.constants import (
     SPLIT_SPEED_INCREASE,
     ASTEROID_DESPAWN_MARGIN
 )
-from asteriod_game.logger import log_event
 import pygame, random
 
 class Asteroid(CircleShape):
@@ -34,9 +33,8 @@ class Asteroid(CircleShape):
         self.kill()
 
         if self.radius <= ASTEROID_MIN_RADIUS:
-            return
-        
-        log_event("asteroid_split")
+            return False
+
         angle = random.uniform(20, 50)
         vel_ast_1 = self.velocity.rotate(angle)
         vel_ast_2 = self.velocity.rotate(-angle)
@@ -46,3 +44,4 @@ class Asteroid(CircleShape):
         ast_2 = Asteroid(self.position.x, self.position.y, new_radius)
         ast_1.velocity = vel_ast_1 * SPLIT_SPEED_INCREASE
         ast_2.velocity = vel_ast_2 * SPLIT_SPEED_INCREASE
+        return True

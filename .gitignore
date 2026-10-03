@@ -9,10 +9,7 @@ __pycache__/
 *.pyc
 
 
-# Game info
-game_state.jsonl
-game_events.jsonl
-leaderboard.json
-
 # Folders
 roadmap*
+results/*
+!results/README.md
