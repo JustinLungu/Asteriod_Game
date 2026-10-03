@@ -27,31 +27,57 @@ That command will use the project environment and the pinned dependency from `py
 
 ## Training
 
-Train an agent headlessly (no window). Each algorithm writes to its own file by default, so runs don't overwrite each other:
+Training runs headlessly (no window). Every run is saved in its own folder, so runs never overwrite each other.
 
-```bash
-./scripts/train.sh --algo ppo --timesteps 200000   # saves results/models/<time>_ppo/final.zip
-./scripts/train.sh --algo dqn --timesteps 200000   # saves results/models/<time>_dqn/final.zip
+### Workflow
 
-./scripts/train.sh --algo ppo --timesteps 200000 --n-envs 1
-```
+1. **Train an agent**
 
-Each run gets its own folder, named by start time and algorithm, for example `results/models/2026-10-03_15-30-12_ppo/`. It contains `final.zip` (the trained model), the intermediate checkpoints, `metadata.json` (algorithm, requested and actual timesteps, number of game copies, seed, checkpoint interval, start and end times, duration, and the stable-baselines3 version), `monitor_<n>.monitor.csv` (one row per finished game for each parallel copy: reward, length in frames, elapsed time, final score, asteroid hits, splits, whether the ship died, and whether the time limit ended it), and `progress.csv` (training statistics for every update, such as the loss and the value estimate quality).
+   ```bash
+   ./scripts/train.sh --algo ppo --timesteps 1000000
+   ```
 
-Plot a finished or in-progress run (writes `plot.png` into the run folder):
+   This creates `results/models/<time>_ppo/`, which contains `final.zip` (the trained model), the checkpoints, `metadata.json`, `monitor_<n>.monitor.csv` (one row per finished game), and `progress.csv` (training statistics per update).
 
-```bash
-./scripts/plot.sh results/models/<time>_ppo
-```
+2. **Record a random baseline** (once is enough, unless you want a bigger sample)
 
-To compare against a random agent, record a baseline once (plays uniformly random actions) and pass it to the plot. The baseline's average appears as a dashed line:
+   ```bash
+   ./scripts/baseline.sh --episodes 100
+   ```
 
-```bash
-./scripts/baseline.sh --episodes 100
-./scripts/plot.sh results/models/<time>_ppo --baseline results/baselines/<time>_random
-```
+   This creates `results/baselines/<time>_random/`, which plays uniformly random button presses. It gives you a reference to compare against.
 
-Other options: `--n-envs` (parallel game copies), `--seed`, `--run-dir` (use a specific folder instead of a timestamped one), and `--checkpoint-every` (how often to save intermediate checkpoints). All outputs go in `results/` (models, logs, and the leaderboard), which is gitignored.
+3. **Plot the run against the baseline**
+
+   ```bash
+   ./scripts/plot.sh results/models/<time>_ppo --baseline results/baselines/<time>_random
+   ```
+
+   This writes `plot.png` into the run folder. The dashed line is the baseline's average.
+
+To use the newest run without copying its name, run `ls -td results/models/*_ppo | head -1` (or `*_dqn`, or `results/baselines/*_random` for the baseline). Plugging that output into the commands above saves typing.
+
+### Options
+
+| Command | Option | Default | What it does |
+|---|---|---|---|
+| `train.sh` | `--algo` | `ppo` | `ppo` or `dqn` |
+| `train.sh` | `--timesteps` | `100000` | total frames to play across all game copies |
+| `train.sh` | `--n-envs` | `4` | number of game copies running in parallel |
+| `train.sh` | `--seed` | `0` | makes a run repeatable |
+| `train.sh` | `--checkpoint-every` | `50000` | how often to save intermediate checkpoints |
+| `train.sh` | `--run-dir` | timestamped folder | use a specific output folder instead |
+| `baseline.sh` | `--episodes` | `50` | number of random games to record |
+| `baseline.sh` | `--seed` | `0` | makes the baseline repeatable |
+| `baseline.sh` | `--run-dir` | timestamped folder | use a specific output folder instead |
+| `plot.sh` | `--baseline` | none | folder of a baseline to draw as a reference line |
+| `plot.sh` | `--out` | `plot.png` in the run folder | where to save the image |
+
+**Comparing algorithms:** train with `--algo dqn` the same way. Plot each run separately, or plot a PPO run against the same baseline to compare the two.
+
+**Using more game copies:** `--n-envs` makes collection faster, up to about the number of free CPU cores. See "How Training Works" below for the tradeoffs.
+
+All outputs go in `results/`, which is gitignored.
 
 ## How Training Works
 
