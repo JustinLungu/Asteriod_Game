@@ -3,13 +3,16 @@ from asteriod_game.rl.policy import LoadedPolicy
 import argparse
 import os
 import pygame
+import random
 
 LABEL_FONT_SIZE = 28
 LABEL_MARGIN = 10
 
-def play_watch(policy, screen, clock, label):
+def play_watch(policy, screen, clock, label, seed=None):
+    if seed is None:
+        random.seed()
     env = policy.make_env()
-    observation, _ = env.reset()
+    observation, _ = env.reset(seed=seed)
     game = env.unwrapped
     font = pygame.font.Font(None, LABEL_FONT_SIZE)
     label_surface = font.render(label, True, "white")
@@ -36,6 +39,7 @@ def play_watch(policy, screen, clock, label):
 def main():
     parser = argparse.ArgumentParser(description="Watch a trained model play one game")
     parser.add_argument("--model", required=True, help="path to a final or checkpoint .zip")
+    parser.add_argument("--seed", type=int, default=None, help="fix the asteroid sequence so runs can be compared")
     args = parser.parse_args()
 
     policy = LoadedPolicy(args.model)
@@ -44,7 +48,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
-    result, points = play_watch(policy, screen, clock, label)
+    result, points = play_watch(policy, screen, clock, label, args.seed)
     print("Watched " + label + " -> " + result + ", score " + str(points))
 
 if __name__ == "__main__":

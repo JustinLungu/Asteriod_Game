@@ -91,6 +91,13 @@ Watch a trained agent play one game in a window. It works with final models and 
 
 To see what checkpoints a run has, list its folder: `ls results/models/<time>_ppo/`. Checkpoint numbers are total timesteps, so a larger number is later in training.
 
+By default each watch gets a different asteroid sequence, just as training does. To compare checkpoints fairly, pass the same `--seed` to each one so they face identical asteroids:
+
+```bash
+./scripts/watch.sh --model results/models/<time>_ppo/checkpoint_50000_steps.zip --seed 1
+./scripts/watch.sh --model results/models/<time>_ppo/final.zip --seed 1
+```
+
 The window shows the algorithm and file name in the bottom-left corner. Press **Esc** to stop early. The game ends when the ship dies or the time limit is reached, and the final score is printed in the terminal. Watching doesn't change the leaderboard.
 
 ## How Training Works
