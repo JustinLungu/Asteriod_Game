@@ -5,7 +5,7 @@ from stable_baselines3.common.vec_env import SubprocVecEnv
 import os
 import pygame
 
-MONITOR_KEYWORDS = ("score", "hits", "splits", "died", "timed_out")
+MONITOR_KEYWORDS = ("score", "hits", "splits", "died", "timed_out", "boundary_frames")
 
 def _make_env(use_dqn_actions, monitor_path):
     def _init():

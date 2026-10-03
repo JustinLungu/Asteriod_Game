@@ -16,6 +16,7 @@ class Player(CircleShape):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.cooldown_timer = 0
+        self.touched_boundary = False
 
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -48,7 +49,7 @@ class Player(CircleShape):
                 self.shoot()
                 self.cooldown_timer = PLAYER_SHOOT_COOLDOWN_SECONDS
 
-        self.clamp_to_screen()
+        self.touched_boundary = self.clamp_to_screen()
 
     def move(self, dt):
         unit_vector = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -56,8 +57,10 @@ class Player(CircleShape):
         self.position += unit_vector
 
     def clamp_to_screen(self):
+        before = pygame.Vector2(self.position)
         self.position.x = max(self.radius, min(self.position.x, SCREEN_WIDTH - self.radius))
         self.position.y = max(self.radius, min(self.position.y, SCREEN_HEIGHT - self.radius))
+        return self.position != before
 
     def shoot(self):
         shot = Shot(self.position.x, self.position.y)
