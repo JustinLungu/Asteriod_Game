@@ -19,6 +19,7 @@ from asteriod_game.rl.constants import (
     OBSERVATION_SIZE,
     REL_VELOCITY_SCALE,
     DEATH_PENALTY,
+    BOUNDARY_PENALTY,
 )
 import gymnasium as gym
 from gymnasium import spaces
@@ -71,6 +72,7 @@ class GameEnv(gym.Env):
 
         self.hits = 0
         self.splits = 0
+        self.boundary_frames = 0
 
         return self._get_observation(), {}
 
@@ -100,9 +102,14 @@ class GameEnv(gym.Env):
 
         truncated = self.timer.is_expired()
 
+        if self.player.touched_boundary:
+            self.boundary_frames += 1
+
         reward = self.score.points - score_before
         if terminated:
             reward += DEATH_PENALTY
+        if self.player.touched_boundary:
+            reward -= BOUNDARY_PENALTY
 
         observation = self._get_observation()
         info = {
@@ -111,6 +118,7 @@ class GameEnv(gym.Env):
             "splits": self.splits,
             "died": int(terminated),
             "timed_out": int(truncated),
+            "boundary_frames": self.boundary_frames,
             "events": events,
         }
 
