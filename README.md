@@ -20,7 +20,7 @@ uv sync
 2. Run the game:
 
 ```bash
-uv run asteriod-game
+./scripts/play.sh
 ```
 
 That command will use the project environment and the pinned dependency from `pyproject.toml` (`pygame==2.6.1`).
@@ -62,7 +62,7 @@ The same controls are also shown in-game from the main menu's "Controls" screen.
 
 ## Logging Output
 
-During a run, the game writes files in the project root (i.e. wherever `uv run asteriod-game` is invoked from):
+During a run, the game writes files in the project root (i.e. wherever `./scripts/play.sh` is invoked from):
 
 - `game_state.jsonl`: periodic state snapshots
 - `game_events.jsonl`: gameplay events (for example, asteroid split or player hit)
