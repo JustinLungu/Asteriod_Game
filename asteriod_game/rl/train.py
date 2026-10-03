@@ -33,10 +33,11 @@ def main():
     parser.add_argument("--timesteps", type=int, default=100_000)
     parser.add_argument("--n-envs", type=int, default=4)
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--out", default="models/ppo_asteroids")
+    parser.add_argument("--out", default=None)
     parser.add_argument("--checkpoint-every", type=int, default=50_000)
     args = parser.parse_args()
-    path = train(args.timesteps, args.n_envs, args.seed, args.out, args.checkpoint_every, args.algo)
+    out = args.out or "models/" + args.algo + "_asteroids"
+    path = train(args.timesteps, args.n_envs, args.seed, out, args.checkpoint_every, args.algo)
     print("Saved model to " + path + ".zip")
 
 if __name__ == "__main__":

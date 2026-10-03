@@ -25,6 +25,17 @@ uv sync
 
 That command will use the project environment and the pinned dependency from `pyproject.toml` (`pygame==2.6.1`).
 
+## Training
+
+Train an agent headlessly (no window). Each algorithm writes to its own file by default, so runs don't overwrite each other:
+
+```bash
+./scripts/train.sh --algo ppo --timesteps 200000   # saves models/ppo_asteroids.zip
+./scripts/train.sh --algo dqn --timesteps 200000   # saves models/dqn_asteroids.zip
+```
+
+Other options: `--n-envs` (parallel game copies), `--seed`, `--out` (custom output path), and `--checkpoint-every` (how often to save intermediate checkpoints). Trained models go in `models/`, which is gitignored.
+
 ## Installing uv (if needed)
 
 If you do not have `uv` yet, install it first:
