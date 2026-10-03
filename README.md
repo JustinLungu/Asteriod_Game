@@ -30,13 +30,15 @@ That command will use the project environment and the pinned dependency from `py
 Train an agent headlessly (no window). Each algorithm writes to its own file by default, so runs don't overwrite each other:
 
 ```bash
-./scripts/train.sh --algo ppo --timesteps 200000   # saves results/models/ppo_asteroids.zip
-./scripts/train.sh --algo dqn --timesteps 200000   # saves results/models/dqn_asteroids.zip
+./scripts/train.sh --algo ppo --timesteps 200000   # saves results/models/<time>_ppo/final.zip
+./scripts/train.sh --algo dqn --timesteps 200000   # saves results/models/<time>_dqn/final.zip
 
 ./scripts/train.sh --algo ppo --timesteps 200000 --n-envs 1
 ```
 
-Other options: `--n-envs` (parallel game copies), `--seed`, `--out` (custom output path), and `--checkpoint-every` (how often to save intermediate checkpoints). All outputs go in `results/` (models, logs, and the leaderboard), which is gitignored.
+Each run gets its own folder, named by start time and algorithm, for example `results/models/2026-10-03_15-30-12_ppo/`. It contains `final.zip` (the trained model), the intermediate checkpoints, and `metadata.json` (algorithm, requested and actual timesteps, number of game copies, seed, checkpoint interval, start and end times, duration, and the stable-baselines3 version).
+
+Other options: `--n-envs` (parallel game copies), `--seed`, `--run-dir` (use a specific folder instead of a timestamped one), and `--checkpoint-every` (how often to save intermediate checkpoints). All outputs go in `results/` (models, logs, and the leaderboard), which is gitignored.
 
 ## How Training Works
 
