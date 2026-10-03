@@ -88,7 +88,8 @@ class GameEnv(gym.Env):
             for shot in self.shots:
                 if asteroid.collides_with(shot):
                     events.append("asteroid_shot")
-                    asteroid.split()
+                    if asteroid.split():
+                        events.append("asteroid_split")
                     shot.kill()
                     self.score.add_points(SCORE_PER_ASTEROID_HIT)
 
