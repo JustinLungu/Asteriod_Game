@@ -69,6 +69,9 @@ class GameEnv(gym.Env):
         Timer.containers = (self.updatable, self.drawable)
         self.timer = Timer()
 
+        self.hits = 0
+        self.splits = 0
+
         return self._get_observation(), {}
 
     def step(self, action):
@@ -88,8 +91,10 @@ class GameEnv(gym.Env):
             for shot in self.shots:
                 if asteroid.collides_with(shot):
                     events.append("asteroid_shot")
+                    self.hits += 1
                     if asteroid.split():
                         events.append("asteroid_split")
+                        self.splits += 1
                     shot.kill()
                     self.score.add_points(SCORE_PER_ASTEROID_HIT)
 
@@ -100,7 +105,14 @@ class GameEnv(gym.Env):
             reward += DEATH_PENALTY
 
         observation = self._get_observation()
-        info = {"score": self.score.points, "events": events}
+        info = {
+            "score": self.score.points,
+            "hits": self.hits,
+            "splits": self.splits,
+            "died": int(terminated),
+            "timed_out": int(truncated),
+            "events": events,
+        }
 
         return observation, reward, terminated, truncated, info
 

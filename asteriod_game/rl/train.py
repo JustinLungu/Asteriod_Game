@@ -1,6 +1,7 @@
 from asteriod_game.rl.vec import make_vec_env
 from stable_baselines3 import DQN, PPO
 from stable_baselines3.common.callbacks import CheckpointCallback
+from stable_baselines3.common.logger import configure
 from datetime import datetime
 import argparse
 import json
@@ -22,7 +23,7 @@ def train(timesteps, n_envs, seed, run_dir, checkpoint_every, algo):
     os.makedirs(run_dir, exist_ok=True)
     started = datetime.now()
 
-    vec_env = make_vec_env(n_envs, seed=seed, use_dqn_actions=use_dqn_actions)
+    vec_env = make_vec_env(n_envs, seed=seed, use_dqn_actions=use_dqn_actions, log_dir=run_dir)
     checkpoints = CheckpointCallback(
         save_freq=max(1, checkpoint_every // n_envs),
         save_path=run_dir,
@@ -30,6 +31,7 @@ def train(timesteps, n_envs, seed, run_dir, checkpoint_every, algo):
     )
     try:
         model = algorithm("MlpPolicy", vec_env, seed=seed, verbose=1)
+        model.set_logger(configure(run_dir, ["stdout", "csv"]))
         model.learn(total_timesteps=timesteps, callback=checkpoints)
         final_path = os.path.join(run_dir, "final")
         model.save(final_path)

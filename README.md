@@ -36,7 +36,7 @@ Train an agent headlessly (no window). Each algorithm writes to its own file by 
 ./scripts/train.sh --algo ppo --timesteps 200000 --n-envs 1
 ```
 
-Each run gets its own folder, named by start time and algorithm, for example `results/models/2026-10-03_15-30-12_ppo/`. It contains `final.zip` (the trained model), the intermediate checkpoints, and `metadata.json` (algorithm, requested and actual timesteps, number of game copies, seed, checkpoint interval, start and end times, duration, and the stable-baselines3 version).
+Each run gets its own folder, named by start time and algorithm, for example `results/models/2026-10-03_15-30-12_ppo/`. It contains `final.zip` (the trained model), the intermediate checkpoints, `metadata.json` (algorithm, requested and actual timesteps, number of game copies, seed, checkpoint interval, start and end times, duration, and the stable-baselines3 version), `monitor_<n>.monitor.csv` (one row per finished game for each parallel copy: reward, length in frames, elapsed time, final score, asteroid hits, splits, whether the ship died, and whether the time limit ended it), and `progress.csv` (training statistics for every update, such as the loss and the value estimate quality).
 
 Other options: `--n-envs` (parallel game copies), `--seed`, `--run-dir` (use a specific folder instead of a timestamped one), and `--checkpoint-every` (how often to save intermediate checkpoints). All outputs go in `results/` (models, logs, and the leaderboard), which is gitignored.
 
