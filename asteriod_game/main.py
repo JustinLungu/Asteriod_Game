@@ -6,7 +6,6 @@ from asteriod_game.ui.menu import Menu
 from asteriod_game.ui.controls_screen import ControlsScreen
 from asteriod_game.rl.env import GameEnv
 import pygame
-import sys
 
 
 def actions_from_keyboard():
@@ -30,8 +29,6 @@ def end_game(reason, score, leaderboard):
     leaderboard.submit(score.points)
     print("Leaderboard: " + str(leaderboard.scores))
 
-    sys.exit()
-
 
 def main():
     print("Starting Asteroids with pygame version: " + pygame.version.ver)
@@ -46,6 +43,8 @@ def main():
     menu = Menu(screen, leaderboard)
     controls_screen = ControlsScreen(screen)
 
+    env = GameEnv()
+
     while True:
         action = menu.run(clock)
         if action == "quit":
@@ -55,9 +54,11 @@ def main():
                 return
             continue
         if action == "start":
-            break
+            if play_game(env, screen, clock, leaderboard) == "quit":
+                return
 
-    env = GameEnv()
+
+def play_game(env, screen, clock, leaderboard):
     env.reset()
 
     updatable = env.updatable
@@ -73,10 +74,10 @@ def main():
         log_state()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return
+                return "quit"
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
-                    return
+                    return "quit"
 
         actions = actions_from_keyboard()
         observation, reward, terminated, truncated, info = env.step(actions.to_array())
@@ -86,8 +87,10 @@ def main():
 
         if terminated:
             end_game("player_hit", env.score, leaderboard)
+            return "over"
         if truncated:
             end_game("time_limit_reached", env.score, leaderboard)
+            return "over"
 
         screen.fill("black")
         for drawing in drawable:
