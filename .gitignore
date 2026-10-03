@@ -11,4 +11,5 @@ __pycache__/
 
 # Folders
 roadmap*
-results/
+results/*
+!results/README.md
