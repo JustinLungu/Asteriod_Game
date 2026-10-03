@@ -25,6 +25,8 @@ uv sync
 
 That command will use the project environment and the pinned dependency from `pyproject.toml` (`pygame==2.6.1`).
 
+The main menu has four options: **Start Game**, **Controls**, **Watch AI**, and **Quit**. Navigate with Up/Down and select with Enter. Watch AI lets you see a trained agent play; see "Watching a Trained Model" below.
+
 ## Training
 
 Training runs headlessly (no window). Every run is saved in its own folder, so runs never overwrite each other.
@@ -77,7 +79,43 @@ To use the newest run without copying its name, run `ls -td results/models/*_ppo
 
 **Using more game copies:** `--n-envs` makes collection faster, up to about the number of free CPU cores. See "How Training Works" below for the tradeoffs.
 
+For what each parameter does and how it affects performance, see `asteriod_game/rl/PARAMETERS.md`.
+
 All outputs go in `results/`, which is gitignored.
+
+## Watching a Trained Model
+
+Watch a trained agent play one game in a window. It works with final models and with checkpoints from the middle of training, so you can compare an early, middle, and final agent.
+
+### From the menu
+
+1. Run `./scripts/play.sh`.
+2. Choose **Watch AI** and press Enter.
+3. **Choose a run.** The first list shows each training run, newest first, with its algorithm and how many timesteps it trained for. Choose one with Up/Down and press Enter.
+4. **Choose a stage.** The second list shows that run's stages: `final`, then each checkpoint with its timestep count (`50,000 steps`, `100,000 steps`, and so on). Checkpoint numbers are total timesteps, so a larger number is later in training. Choose a stage and press Enter.
+5. The agent plays one game in its own window, labelled with the run, the stage, and the algorithm. The menu window closes while it plays and reopens afterwards. Press **Esc** to stop early, or wait for the ship to die or the time limit to run out.
+6. When the game ends, you return to the stage list of the same run. Pick another stage to compare, or press Esc to go back to the run list. Press Esc again to return to the main menu.
+
+Closing the window at any point quits the program. If there are no runs yet, the list says so; train a model first (see "Training" above).
+
+### From the command line
+
+```bash
+./scripts/watch.sh --model results/models/<time>_ppo/final.zip
+./scripts/watch.sh --model results/models/<time>_ppo/checkpoint_50000_steps.zip
+./scripts/watch.sh --model results/models/<time>_dqn/final.zip
+```
+
+To see what checkpoints a run has, list its folder: `ls results/models/<time>_ppo/`. Checkpoint numbers are total timesteps, so a larger number is later in training.
+
+By default each watch gets a different asteroid sequence, just as training does. To compare checkpoints fairly, pass the same `--seed` to each one so they face identical asteroids:
+
+```bash
+./scripts/watch.sh --model results/models/<time>_ppo/checkpoint_50000_steps.zip --seed 1
+./scripts/watch.sh --model results/models/<time>_ppo/final.zip --seed 1
+```
+
+The window shows the algorithm and file name in the bottom-left corner. Press **Esc** to stop early. The game ends when the ship dies or the time limit is reached, and the final score is printed in the terminal. Watching doesn't change the leaderboard.
 
 ## How Training Works
 
@@ -168,11 +206,12 @@ uv --version
 - `Q`: quit game
 - `Window close button`: quit game
 
-The same controls are also shown in-game from the main menu's "Controls" screen.
+The same controls are also shown in-game from the main menu's "Controls" screen. Press Enter or Esc there to go back to the menu.
 
 ## Game Notes
 
-- On launch you get a main menu: Start Game, Controls, and Quit (navigate with Up/Down, select with Enter).
+- On launch you get a main menu: Start Game, Controls, Watch AI, and Quit (navigate with Up/Down, select with Enter).
+- When a game ends (you're hit or the time limit runs out), you return to the main menu, where you can start another game. After a watched game, you return to the stage list instead, to compare stages.
 - The game runs at about 60 FPS.
 - Asteroids spawn from screen edges.
 - Large asteroids split into smaller, faster asteroids when shot.
