@@ -3,6 +3,7 @@ from asteriod_game.constants import (
     LEADERBOARD_SIZE,
 )
 import json
+import os
 
 class Leaderboard:
     def __init__(self, path=LEADERBOARD_FILE, size=LEADERBOARD_SIZE):
@@ -23,6 +24,7 @@ class Leaderboard:
         return sorted((s for s in data if isinstance(s, int)), reverse=True)[:self.size]
 
     def _save(self):
+        os.makedirs(os.path.dirname(self.path), exist_ok=True)
         with open(self.path, "w") as f:
             json.dump(self.scores, f, indent=2)
 

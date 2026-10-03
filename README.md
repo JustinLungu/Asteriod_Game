@@ -30,11 +30,13 @@ That command will use the project environment and the pinned dependency from `py
 Train an agent headlessly (no window). Each algorithm writes to its own file by default, so runs don't overwrite each other:
 
 ```bash
-./scripts/train.sh --algo ppo --timesteps 200000   # saves models/ppo_asteroids.zip
-./scripts/train.sh --algo dqn --timesteps 200000   # saves models/dqn_asteroids.zip
+./scripts/train.sh --algo ppo --timesteps 200000   # saves results/models/ppo_asteroids.zip
+./scripts/train.sh --algo dqn --timesteps 200000   # saves results/models/dqn_asteroids.zip
+
+./scripts/train.sh --algo ppo --timesteps 200000 --n-envs 1
 ```
 
-Other options: `--n-envs` (parallel game copies), `--seed`, `--out` (custom output path), and `--checkpoint-every` (how often to save intermediate checkpoints). Trained models go in `models/`, which is gitignored.
+Other options: `--n-envs` (parallel game copies), `--seed`, `--out` (custom output path), and `--checkpoint-every` (how often to save intermediate checkpoints). All outputs go in `results/` (models, logs, and the leaderboard), which is gitignored.
 
 ## How Training Works
 
@@ -101,11 +103,11 @@ The same controls are also shown in-game from the main menu's "Controls" screen.
 
 ## Logging Output
 
-During a run, the game writes files in the project root (i.e. wherever `./scripts/play.sh` is invoked from):
+During a run, the game writes files into `results/`:
 
-- `game_state.jsonl`: periodic state snapshots
-- `game_events.jsonl`: gameplay events (for example, asteroid split or player hit)
-- `leaderboard.json`: persisted top-5 high scores (not overwritten between runs)
+- `results/game_state.jsonl`: periodic state snapshots
+- `results/game_events.jsonl`: gameplay events (for example, asteroid split or player hit)
+- `results/leaderboard.json`: persisted top-5 high scores (not overwritten between runs)
 
 The two `.jsonl` logs are overwritten at the start of each new run.
 
@@ -116,7 +118,7 @@ The installable package lives under `asteriod_game/` at the repo root.
 - `main.py`: menu/controls state wiring, game loop, and sprite group wiring
 - `constants.py`: global constants shared across the package (screen size, leaderboard file)
 - `logger.py`: JSONL state/event logging
-- `leaderboard.py`: top-5 high score persistence (`leaderboard.json`)
+- `leaderboard.py`: top-5 high score persistence (`results/leaderboard.json`)
 - `game/`: the actual gameplay
   - `circleshape.py`: base class for circle-collision sprites
   - `player.py`: ship movement, rotation, and shooting

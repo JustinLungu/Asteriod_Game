@@ -36,7 +36,7 @@ def main():
     parser.add_argument("--out", default=None)
     parser.add_argument("--checkpoint-every", type=int, default=50_000)
     args = parser.parse_args()
-    out = args.out or "models/" + args.algo + "_asteroids"
+    out = args.out or "results/models/" + args.algo + "_asteroids"
     path = train(args.timesteps, args.n_envs, args.seed, out, args.checkpoint_every, args.algo)
     print("Saved model to " + path + ".zip")
 

@@ -2,8 +2,13 @@ import inspect
 import json
 import math
 from datetime import datetime
+import os
+
+from asteriod_game.constants import RESULTS_DIR
 
 __all__ = ["log_state", "log_event"]
+
+os.makedirs(RESULTS_DIR, exist_ok=True)
 
 _FPS = 60
 _MAX_SECONDS = 16
@@ -109,7 +114,7 @@ def log_state():
 
     # New log file on each run
     mode = "w" if not _state_log_initialized else "a"
-    with open("game_state.jsonl", mode) as f:
+    with open(os.path.join(RESULTS_DIR, "game_state.jsonl"), mode) as f:
         f.write(json.dumps(entry) + "\n")
 
     _state_log_initialized = True
@@ -129,7 +134,7 @@ def log_event(event_type, **details):
     }
 
     mode = "w" if not _event_log_initialized else "a"
-    with open("game_events.jsonl", mode) as f:
+    with open(os.path.join(RESULTS_DIR, "game_events.jsonl"), mode) as f:
         f.write(json.dumps(event) + "\n")
 
     _event_log_initialized = True
