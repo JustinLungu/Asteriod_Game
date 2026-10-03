@@ -1,5 +1,9 @@
 from asteriod_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from asteriod_game.game.constants import SCORE_PER_ASTEROID_HIT
+from asteriod_game.game.constants import (
+    SCORE_PER_ASTEROID_HIT,
+    ASTEROID_MAX_RADIUS,
+    PLAYER_SHOOT_COOLDOWN_SECONDS,
+)
 from asteriod_game.game.actions import Actions
 from asteriod_game.game.player import Player
 from asteriod_game.game.asteroid import Asteroid
@@ -7,7 +11,14 @@ from asteriod_game.game.asteroidfield import AsteroidField
 from asteriod_game.game.shot import Shot
 from asteriod_game.game.score import Score
 from asteriod_game.game.timer import Timer
-from asteriod_game.rl.constants import FIXED_DT
+from asteriod_game.rl.constants import (
+    FIXED_DT,
+    N_NEAREST_ASTEROIDS,
+    PLAYER_OBSERVATION_SIZE,
+    ASTEROID_OBSERVATION_SIZE,
+    OBSERVATION_SIZE,
+    REL_VELOCITY_SCALE,
+)
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
@@ -21,8 +32,7 @@ class GameEnv(gym.Env):
         # thrust_forward, thrust_backward, shoot
         self.action_space = spaces.MultiBinary(5)
 
-        # placeholder; real observation design is feature/rl-observation-reward
-        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(1,), dtype=np.float32)
+        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(OBSERVATION_SIZE,), dtype=np.float32)
 
         self.updatable = None
         self.drawable = None
@@ -91,5 +101,30 @@ class GameEnv(gym.Env):
         return observation, reward, terminated, truncated, info
 
     def _get_observation(self):
-        # placeholder; real observation design is feature/rl-observation-reward
-        return np.zeros(1, dtype=np.float32)
+        obs = np.zeros(OBSERVATION_SIZE, dtype=np.float32)
+
+        forward = pygame.Vector2(0, 1).rotate(self.player.rotation)
+        cooldown = min(max(self.player.cooldown_timer, 0.0) / PLAYER_SHOOT_COOLDOWN_SECONDS, 1.0)
+        obs[0] = self.player.position.x / SCREEN_WIDTH * 2 - 1
+        obs[1] = self.player.position.y / SCREEN_HEIGHT * 2 - 1
+        obs[2] = forward.x
+        obs[3] = forward.y
+        obs[4] = cooldown
+
+        nearest = sorted(
+            self.asteroids,
+            key=lambda asteroid: asteroid.position.distance_to(self.player.position),
+        )[:N_NEAREST_ASTEROIDS]
+
+        for i, asteroid in enumerate(nearest):
+            start = PLAYER_OBSERVATION_SIZE + i * ASTEROID_OBSERVATION_SIZE
+            rel_pos = asteroid.position - self.player.position
+            rel_vel = asteroid.velocity - self.player.velocity
+            obs[start] = 1.0
+            obs[start + 1] = rel_pos.x / SCREEN_WIDTH
+            obs[start + 2] = rel_pos.y / SCREEN_HEIGHT
+            obs[start + 3] = rel_vel.x * REL_VELOCITY_SCALE
+            obs[start + 4] = rel_vel.y * REL_VELOCITY_SCALE
+            obs[start + 5] = asteroid.radius / ASTEROID_MAX_RADIUS
+
+        return obs
