@@ -42,13 +42,19 @@ def rolling_mean(values, window):
         means.append(sum(chunk) / len(chunk))
     return means
 
-def plot_run(run_dir, out_path=None):
+def plot_run(run_dir, out_path=None, baseline_dir=None):
     games = read_games(run_dir)
     if not games:
         raise SystemExit("No finished games found in " + run_dir + " (no monitor_*.monitor.csv rows)")
     episodes = list(range(1, len(games) + 1))
     window = max(1, len(games) // 20)
     update_steps, losses = read_updates(run_dir)
+    baseline = read_games(baseline_dir) if baseline_dir else []
+
+    def draw_baseline(ax, key):
+        if baseline:
+            mean = sum(g[key] for g in baseline) / len(baseline)
+            ax.axhline(mean, color="gray", linestyle="--", label="random baseline mean")
 
     panels = 4 if losses else 3
     fig, axes = plt.subplots(panels, 1, figsize=(9, 3 * panels), sharex=False)
@@ -56,18 +62,22 @@ def plot_run(run_dir, out_path=None):
     rewards = [g["reward"] for g in games]
     axes[0].plot(episodes, rewards, alpha=0.3, label="per game")
     axes[0].plot(episodes, rolling_mean(rewards, window), label="rolling mean")
+    draw_baseline(axes[0], "reward")
     axes[0].set_ylabel("reward per game")
     axes[0].legend()
 
     lengths = [g["length"] for g in games]
     axes[1].plot(episodes, lengths, alpha=0.3)
     axes[1].plot(episodes, rolling_mean(lengths, window))
+    draw_baseline(axes[1], "length")
     axes[1].set_ylabel("length (frames)")
 
     hits = [g["hits"] for g in games]
     axes[2].plot(episodes, hits, alpha=0.3)
     axes[2].plot(episodes, rolling_mean(hits, window))
+    draw_baseline(axes[2], "hits")
     axes[2].set_ylabel("asteroid hits")
+    axes[2].legend()
     axes[2].set_xlabel("game number (across all copies, by finish time)")
 
     if losses:
@@ -86,8 +96,9 @@ def main():
     parser = argparse.ArgumentParser(description="Plot training results for one run folder")
     parser.add_argument("run_dir")
     parser.add_argument("--out", default=None)
+    parser.add_argument("--baseline", default=None, help="baseline folder to draw as reference lines")
     args = parser.parse_args()
-    print("Saved plot to " + plot_run(args.run_dir, args.out))
+    print("Saved plot to " + plot_run(args.run_dir, args.out, args.baseline))
 
 if __name__ == "__main__":
     main()
