@@ -77,6 +77,8 @@ To use the newest run without copying its name, run `ls -td results/models/*_ppo
 
 **Using more game copies:** `--n-envs` makes collection faster, up to about the number of free CPU cores. See "How Training Works" below for the tradeoffs.
 
+For what each parameter does and how it affects performance, see `asteriod_game/rl/PARAMETERS.md`.
+
 All outputs go in `results/`, which is gitignored.
 
 ## Watching a Trained Model
