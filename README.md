@@ -132,6 +132,18 @@ While training, SB3 prints a table every update. Here's what each row means.
 
 **What to look for over a long run:** ep_rew_mean and explained_variance rising, value_loss falling, entropy slowly falling, and approx_kl and clip_fraction staying small. If the reward flattens while entropy keeps falling, the agent has settled into one way of playing.
 
+### DQN stats
+
+DQN prints a different table, because it learns differently from PPO.
+
+- **exploration_rate:** how often DQN picks a random action instead of its best guess. It starts near 1.0 and falls over time. At 0.05, it's mostly playing its best guess now. PPO has no equivalent, since it explores by sampling its own probabilities.
+- **episodes:** the number of finished games so far. PPO doesn't print this.
+- **loss:** DQN's single learning signal. Its scale is different from PPO's loss, so don't compare the two numbers directly.
+- **n_updates:** individual gradient steps taken so far. For PPO this counted epochs, so the same name means something different here.
+- **fps:** usually much higher than PPO's. DQN takes a small learning step every few frames, instead of collecting a large rollout and making several passes over it. That makes each frame cheaper, not more useful, so compare algorithms by reward against `total_timesteps`, not against `time_elapsed`.
+
+The DQN table has no `explained_variance`, `value_loss`, `approx_kl`, or `clip_fraction`, because those belong to PPO's learning step.
+
 ## Installing uv (if needed)
 
 If you do not have `uv` yet, install it first:
