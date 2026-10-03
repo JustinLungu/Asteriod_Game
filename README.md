@@ -79,6 +79,20 @@ To use the newest run without copying its name, run `ls -td results/models/*_ppo
 
 All outputs go in `results/`, which is gitignored.
 
+## Watching a Trained Model
+
+Watch a trained agent play one game in a window. It works with final models and with checkpoints from the middle of training, so you can compare an early, middle, and final agent.
+
+```bash
+./scripts/watch.sh --model results/models/<time>_ppo/final.zip
+./scripts/watch.sh --model results/models/<time>_ppo/checkpoint_50000_steps.zip
+./scripts/watch.sh --model results/models/<time>_dqn/final.zip
+```
+
+To see what checkpoints a run has, list its folder: `ls results/models/<time>_ppo/`. Checkpoint numbers are total timesteps, so a larger number is later in training.
+
+The window shows the algorithm and file name in the bottom-left corner. Press **Esc** to stop early. The game ends when the ship dies or the time limit is reached, and the final score is printed in the terminal. Watching doesn't change the leaderboard.
+
 ## How Training Works
 
 Training alternates between two phases: the agent plays to collect experience, then it learns from that experience.
