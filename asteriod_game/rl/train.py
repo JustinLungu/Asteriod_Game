@@ -1,5 +1,5 @@
 from asteriod_game.rl.vec import make_vec_env
-from stable_baselines3 import DQN, PPO
+from asteriod_game.rl.algorithms import ALGORITHMS
 from stable_baselines3.common.callbacks import CheckpointCallback
 from stable_baselines3.common.logger import configure
 from datetime import datetime
@@ -7,11 +7,6 @@ import argparse
 import json
 import os
 import stable_baselines3
-
-ALGORITHMS = {
-    "ppo": (PPO, False),
-    "dqn": (DQN, True),
-}
 
 MODELS_DIR = "results/models"
 

@@ -1,14 +1,9 @@
 from asteriod_game.rl.env import GameEnv
 from asteriod_game.rl.wrappers import DiscreteActionWrapper
-from stable_baselines3 import DQN, PPO
+from asteriod_game.rl.algorithms import ALGORITHMS
 import json
 import os
 import pygame
-
-ALGORITHMS = {
-    "ppo": (PPO, False),
-    "dqn": (DQN, True),
-}
 
 class LoadedPolicy:
     def __init__(self, model_path):
