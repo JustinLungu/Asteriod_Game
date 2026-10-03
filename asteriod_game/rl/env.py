@@ -18,6 +18,7 @@ from asteriod_game.rl.constants import (
     ASTEROID_OBSERVATION_SIZE,
     OBSERVATION_SIZE,
     REL_VELOCITY_SCALE,
+    DEATH_PENALTY,
 )
 import gymnasium as gym
 from gymnasium import spaces
@@ -72,6 +73,7 @@ class GameEnv(gym.Env):
 
     def step(self, action):
         actions = Actions.from_array(action)
+        score_before = self.score.points
 
         self.updatable.update(FIXED_DT)
         self.player.update(FIXED_DT, actions)
@@ -92,8 +94,9 @@ class GameEnv(gym.Env):
 
         truncated = self.timer.is_expired()
 
-        # placeholder; real reward design is feature/rl-observation-reward
-        reward = 0.0
+        reward = self.score.points - score_before
+        if terminated:
+            reward += DEATH_PENALTY
 
         observation = self._get_observation()
         info = {"score": self.score.points, "events": events}
