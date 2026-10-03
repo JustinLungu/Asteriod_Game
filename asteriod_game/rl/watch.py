@@ -1,9 +1,10 @@
-from asteriod_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from asteriod_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT, WATCH_QUIT_EXIT_CODE
 from asteriod_game.rl.policy import LoadedPolicy
 import argparse
 import os
 import pygame
 import random
+import sys
 
 LABEL_FONT_SIZE = 28
 LABEL_MARGIN = 10
@@ -43,13 +44,15 @@ def main():
     args = parser.parse_args()
 
     policy = LoadedPolicy(args.model)
-    label = policy.algo + " " + os.path.basename(args.model)
+    run_name = os.path.basename(os.path.dirname(os.path.normpath(args.model)))
+    label = policy.algo + " " + run_name + " " + os.path.basename(args.model)
 
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     result, points = play_watch(policy, screen, clock, label, args.seed)
     print("Watched " + label + " -> " + result + ", score " + str(points))
+    sys.exit(WATCH_QUIT_EXIT_CODE if result == "quit" else 0)
 
 if __name__ == "__main__":
     main()

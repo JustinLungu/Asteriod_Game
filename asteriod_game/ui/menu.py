@@ -7,6 +7,8 @@ from asteriod_game.ui.constants import (
     LEADERBOARD_HEADER_FONT_SIZE,
     LEADERBOARD_ENTRY_FONT_SIZE,
     LEADERBOARD_ENTRY_SPACING,
+    KEY_REPEAT_DELAY_MS,
+    KEY_REPEAT_INTERVAL_MS,
 )
 import pygame
 
@@ -14,6 +16,7 @@ class Menu:
     OPTIONS = [
         ("Start Game", "start"),
         ("Controls", "controls"),
+        ("Watch AI", "watch"),
         ("Quit", "quit"),
     ]
 
@@ -27,6 +30,13 @@ class Menu:
         self.leaderboard_entry_font = pygame.font.Font(None, LEADERBOARD_ENTRY_FONT_SIZE)
 
     def run(self, clock):
+        pygame.key.set_repeat(KEY_REPEAT_DELAY_MS, KEY_REPEAT_INTERVAL_MS)
+        try:
+            return self._loop(clock)
+        finally:
+            pygame.key.set_repeat()
+
+    def _loop(self, clock):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
